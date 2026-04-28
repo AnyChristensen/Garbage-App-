@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "287361431295",
+    "project_id": "garbage-app-1c9c5",
+    "storage_bucket": "garbage-app-1c9c5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:287361431295:android:315cb389792eb5fbf53eca",
+        "android_client_info": {
+          "package_name": "dk.christensen.garbagefinalassignment"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB99Lk0RYrJuf4wQ2AxhGlsKQl_91eExuQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:287361431295:android:7b4602b62aa860baf53eca",
+        "android_client_info": {
+          "package_name": "dk.christensen.garbagev3"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB99Lk0RYrJuf4wQ2AxhGlsKQl_91eExuQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
