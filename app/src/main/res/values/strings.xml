@@ -36,7 +36,7 @@
 <string name="theme_label">Theme</string>
 <string name="web_view">Affald KBH</string>
 <string name="affald_Kbh_button">Go to Affald KBH</string>
-<string name="Recycling_station_list">Recycling stations</string>
+<string name="Recycling_station_list">Recycling Stations</string>
 <string name="geofence_notification_title">You are near %1$s!</string>
 <string name="geofence_notification_message">You have %1$d %2$s to empty here (like %3$s).</string>
 <string name="enable_geofencing_button_label">Enable geofencing</string>
@@ -60,5 +60,6 @@
 <string name="background_location_permission_title">Background Location Required</string>
 <string name="background_location_permission_rationale">To notify you when you are near a recycling station even when the app is closed or not in use, GarbageV3 collects location data in the background.\n\nPlease select \"Allow all the time\" on the next screen to enable geofencing.</string>
 <string name="go_to_settings_button_label">Go to Settings</string>
+<string name="filter_button">Choose Bin type</string>
 </resources>
 
