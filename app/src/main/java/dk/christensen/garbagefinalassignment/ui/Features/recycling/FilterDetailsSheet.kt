@@ -55,10 +55,12 @@ private fun FilterDetailsSheetPreview() {
         FilterDetailsSheet(
             bins = listOf(
                 Bin( name = "Paper",
+                    nameDanish = "Papir",
                     imageUrl = "",
                     brandColor = Color.Red,
                     lastPickupTime = null),
                 Bin(name = "Glass",
+                    nameDanish = "Glas",
                     imageUrl = "",
                     brandColor = Color.Green,
                     lastPickupTime = null)

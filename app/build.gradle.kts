@@ -7,6 +7,9 @@ plugins {
     alias { libs.plugins.kotlin.serialization }
     alias(libs.plugins.google.services)
     alias(libs.plugins.firebase.crashlytics)
+    // To make sure that the API key is not pushed to github
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
+
 }
 
 android {
@@ -23,7 +26,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
+}
 
     buildTypes {
         release {
@@ -43,6 +46,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -52,6 +56,7 @@ dependencies {
     implementation(libs.firebase.firestore)
     implementation(libs.work.runtime.ktx)
     implementation(libs.hilt.work)
+    implementation(libs.androidx.compose.runtime)
     ksp(libs.hilt.compiler)
     implementation(libs.play.services.location)
     implementation(libs.kotlinx.coroutines.play.services)
@@ -83,4 +88,5 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    implementation(libs.maps.compose)
 }
