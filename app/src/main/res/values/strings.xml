@@ -35,7 +35,9 @@
 <string name="ok_button_label">OK</string>
 <string name="theme_label">Theme</string>
 <string name="web_view">Affald KBH</string>
+<string name="title_screen">Scan Garbage</string>
 <string name="affald_Kbh_button">Go to Affald KBH</string>
+<string name="scan_garbage_button">Scan Garbage</string>
 <string name="Recycling_station_list">All Recycling Stations</string>
 <string name="Recycling_station_filtering">Show recycling stations for:</string>
 <string name="geofence_notification_title">You are near %1$s!</string>

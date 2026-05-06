@@ -18,6 +18,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import dk.christensen.garbagefinalassignment.ui.Features.garbage.AffaldKbh
 import dk.christensen.garbagefinalassignment.ui.Features.garbage.AffaldKbhScreen
+import dk.christensen.garbagefinalassignment.ui.Features.garbage.CameraScreen
 import dk.christensen.garbagefinalassignment.ui.Features.garbage.garbageNavGraph
 import dk.christensen.garbagefinalassignment.ui.Features.recycling.Bins
 import dk.christensen.garbagefinalassignment.ui.Features.recycling.RecyclingScreen
@@ -62,7 +63,7 @@ fun MainNavigation(modifier: Modifier = Modifier) {
     { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = BottomNavigation.GarbageTab.route, // GarbageGraph, //
+            startDestination = BottomNavigation.GarbageTab.route, // GarbageGraph
             modifier = Modifier.padding(innerPadding)
         ) {
             // The nested garbage graph
@@ -75,6 +76,10 @@ fun MainNavigation(modifier: Modifier = Modifier) {
             }
             composable<AffaldKbh> {
                 AffaldKbhScreen()
+            }
+
+            composable<CameraScreen> {
+                CameraScreen()
             }
         }
 

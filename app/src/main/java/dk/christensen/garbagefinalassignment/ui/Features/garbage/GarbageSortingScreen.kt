@@ -32,7 +32,13 @@ import dk.christensen.garbagefinalassignment.ui.theme.GarbageFinalTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.ui.unit.dp
 import dk.christensen.garbagefinalassignment.ui.navigation.AppRoute
 import dk.christensen.garbagefinalassignment.ui.navigation.NestedGraph
@@ -130,6 +136,17 @@ private fun GarbageSortingScreen(
                     Button(onClick = uiEvents::onShowAffaldKbhClick) {
                         Text(text = stringResource(id = R.string.affald_Kbh_button))
                     }
+
+                    // Detect garbage items using AI Button
+                    Button(
+                        onClick = uiEvents::onScanClick,
+                    ) {
+                        Icon(Icons.Default.CameraAlt, null)
+                        Text(text = stringResource(id = R.string.scan_garbage_button))
+                    }
+
+
+
                 }
             }
         }
@@ -156,6 +173,7 @@ fun GarbageSortingScreenPreview(){
                 override fun onUserInputChanged(text: String) {}
                 override fun onSearchItemClick(input: String){}
                 override fun onShowAffaldKbhClick() {}
+                override fun onScanClick() {}
                 },
             )
         }

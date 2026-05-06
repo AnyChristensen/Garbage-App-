@@ -89,6 +89,15 @@ class GarbageSortingViewModel @Inject constructor(private val itemRepository : I
                 }
             }
 
+            // Onclick function that navigates to camera screen
+            override fun onScanClick() {
+                viewModelScope.launch {
+                    _navigationEvents.emit(value = NavigationEvent.NavigateToCameraScreen)
+                }
+            }
+
+
+
         }
 
 
@@ -107,11 +116,13 @@ class GarbageSortingViewModel @Inject constructor(private val itemRepository : I
         fun onSearchItemClick(input: String)
         fun onUserInputChanged(text: String)
         fun onShowAffaldKbhClick()
+        fun onScanClick()
     }
 
     sealed class NavigationEvent {
         data object NavigateToGarbageList : NavigationEvent()
         data object NavigateToAffaldKBH : NavigationEvent()
+        data object NavigateToCameraScreen : NavigationEvent()
     }
 
     }

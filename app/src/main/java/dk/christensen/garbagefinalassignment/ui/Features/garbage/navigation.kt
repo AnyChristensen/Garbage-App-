@@ -31,6 +31,9 @@ fun NavGraphBuilder.garbageNavGraph(navController: NavHostController) {
 
                         is GarbageSortingViewModel.NavigationEvent.NavigateToAffaldKBH ->
                             navController.navigate(AffaldKbh)
+
+                        is GarbageSortingViewModel.NavigationEvent.NavigateToCameraScreen ->
+                            navController.navigate(CameraScreen)
                     }
                 }
             )
