@@ -30,6 +30,7 @@ mapsCompose = "5.0.0"
 runtime = "1.11.0"
 camerax = "1.3.3"
 guava = "1.10.2"
+mlkit = "17.0.8"
 
 
 
@@ -76,6 +77,8 @@ androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.r
 androidx-camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "camerax" }
 androidx-camera-view = { module = "androidx.camera:camera-view", version.ref = "camerax" }
 kotlinx-coroutines-guava = {group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-guava", version.ref = "guava" }
+google-mlkit-image-labeling = {module = "com.google.mlkit:image-labeling", version.ref = "mlkit"}
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

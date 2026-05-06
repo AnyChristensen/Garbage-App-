@@ -20,31 +20,36 @@ import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import kotlinx.coroutines.guava.await
+import androidx.core.content.ContextCompat
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 
 
 @Serializable
 object CameraScreen : AppRoute
 
 @Composable
-fun CameraScreen() {
+fun CameraScreen(
+    viewModel: CameraViewModel = hiltViewModel()
+) {
 
-    // State? that...?
+    val uiState by viewModel.uiState.collectAsState()
+
     val context = LocalContext.current
-
-    // State(?) to be able to bind the camera to the lifecycle of the screen
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    // State to hold the camera permission
+    // State to hold the camera permission (granted or not)
     var hasCameraPermission by remember { mutableStateOf(false) }
 
-    // To remember preview view so it does not rerender recomposition?
-    // Remember PreviewView so that is does not recreate (rerender) if the view (object) recompositions
+    // To remember PreviewView so that is does not recreate (rerender) if the view (object) recompositions
     val previewView = remember { PreviewView(context) }
 
     // Launcher used to request permission to use the camera from the OS and update state
@@ -73,29 +78,47 @@ fun CameraScreen() {
         }
     ) { innerPadding ->
 
-        // Only display camera preview if the permission is granted
-        if (hasCameraPermission) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
+            // Only display camera preview if the permission is granted
+            if (hasCameraPermission) {
 
 
-            // Displays the live camera preview on screen
-            // Embedded in AndriodView because....
-            AndroidView(
-                factory = { previewView },
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-            )
+                // Displays the live camera preview on screen
+                // Embedded in AndroidView to be used in compose
+                AndroidView(
+                    factory = { previewView },
+                    modifier = Modifier.weight(1f)
+                )
 
+                // Start CameraX after permission has been granted
+                LaunchedEffect(hasCameraPermission) {
 
-            // Start CameraX after permission has been granted
-            LaunchedEffect(hasCameraPermission) {
+                    startCamera(
+                        context,
+                        lifecycleOwner,
+                        previewView,
+                        viewModel
+                    )
+                }
+            }
 
-                startCamera(
-                    context,
-                    lifecycleOwner,
-                    previewView
+            // Displaying the result from the models detection result
+            uiState.detectedItem?.let {item ->
+                Text(
+                    text = "Found garbage: ${item.what}",
+                    style = MaterialTheme.typography.headlineSmall
+                )
+
+                Text(
+                    text = "Dispose in: ${item.where}",
+                    style = MaterialTheme.typography.bodyLarge
                 )
             }
+
         }
     }
 }
@@ -106,7 +129,8 @@ fun CameraScreen() {
 private suspend fun startCamera(
     context: Context,
     lifecycleOwner: LifecycleOwner,
-    previewView: PreviewView // The UI Surface
+    previewView: PreviewView, // The UI Surface
+    viewModel: CameraViewModel
 ) {
 
     // CameraProvider is the main CameraX entry point
@@ -118,9 +142,21 @@ private suspend fun startCamera(
         it.setSurfaceProvider(previewView.surfaceProvider)
     }
 
-    // 2. Define the Use Case:
+    // 2. Define the analysis Use Case:
     // "I want to analyze frames for ML"
     val analysisUseCase = ImageAnalysis.Builder().build()
+
+    val cameraExecutor = ContextCompat.getMainExecutor(context)
+
+    // Connecting the CameraX frames with the GarbageAnalyzer
+    analysisUseCase.setAnalyzer(
+        cameraExecutor,
+        GarbageAnalyzer {detectedLabel ->
+
+            // Forwarding the labels from the model (ML) to the ViewModel
+            viewModel.uiEvents.onLabelDetected(detectedLabel)
+        }
+    )
 
     try {
         // 3. Unbind old sessions, bind new ones to the Lifecycle

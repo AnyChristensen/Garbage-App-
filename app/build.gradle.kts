@@ -94,4 +94,5 @@ dependencies {
     implementation(libs.androidx.camera.lifecycle)
     implementation(libs.androidx.camera.view)
     implementation(libs.kotlinx.coroutines.guava)
+    implementation(libs.google.mlkit.image.labeling)
 }
