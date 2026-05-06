@@ -21,11 +21,19 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import kotlinx.coroutines.guava.await
@@ -82,16 +90,20 @@ fun CameraScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Only display camera preview if the permission is granted
             if (hasCameraPermission) {
-
 
                 // Displays the live camera preview on screen
                 // Embedded in AndroidView to be used in compose
                 AndroidView(
                     factory = { previewView },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        //.height(500.dp)
+                        .weight(1f)
                 )
 
                 // Start CameraX after permission has been granted
@@ -106,19 +118,95 @@ fun CameraScreen(
                 }
             }
 
+            Spacer(modifier = Modifier.height(16.dp))
+
             // Displaying the result from the models detection result
-            uiState.detectedItem?.let {item ->
-                Text(
-                    text = "Found garbage: ${item.what}",
-                    style = MaterialTheme.typography.headlineSmall
-                )
+            OutlinedCard(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(80.dp)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(12.dp),
 
-                Text(
-                    text = "Dispose in: ${item.where}",
-                    style = MaterialTheme.typography.bodyLarge
-                )
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+
+                    val detectedItem = uiState.detectedItem
+
+                    // The different text messages during scanning
+                    // Since the model is not that good at scanning I want to show:
+                    // 1. What the model labels (what it "sees"), when it does not have a match with the database ("Detected")
+                    // 2. When the model is "scanning"
+                    // 3. When there is a match between the models label and a garbage item form the database
+                    // (4. Where it should be disposed, if matched)
+                    when {
+
+
+                        // When searching the database
+                        uiState.isScanning -> {
+
+                            Text(
+                                text = "Scanning...",
+                                style = MaterialTheme.typography.bodyMedium,
+                                textAlign = TextAlign.Center
+                            )
+
+                            Spacer(
+                                modifier = Modifier.height(12.dp)
+                            )
+
+                            Text(
+                                text = "Detected: ${uiState.detectedLabel}",
+                                style = MaterialTheme.typography.bodySmall,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+
+                        // When a match is found
+                        detectedItem != null -> {
+
+                            Text(
+                                text = "Found garbage: ${detectedItem.what}",
+                                style = MaterialTheme.typography.bodyMedium,
+                                textAlign = TextAlign.Center
+                            )
+
+                            Spacer(
+                                modifier = Modifier.height(12.dp)
+                            )
+
+                            Text(
+                                text = "Dispose in: ${detectedItem.where}",
+                                style = MaterialTheme.typography.bodySmall,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+
+                        // Label found but no database match
+                        uiState.detectedLabel != null -> {
+
+                            Text(
+                                text = "Detected: ${uiState.detectedLabel}",
+                                style = MaterialTheme.typography.bodyMedium,
+                                textAlign = TextAlign.Center
+                            )
+
+                            Spacer(
+                                modifier = Modifier.height(12.dp)
+                            )
+
+                            Text(
+                                text = "No recycling category found",
+                                style = MaterialTheme.typography.bodySmall,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    }
+                }
             }
-
         }
     }
 }

@@ -20,23 +20,66 @@ class CameraViewModel @Inject constructor(private val repository: ItemRepository
 
     val uiEvents: UiEvents = object : UiEvents {
 
+        private var lastDetectionTime = 0L
+        private var lastDetectedLabel: String? = null
+
         // function that is called when a item/label is detected
         override fun onLabelDetected(label: String) {
 
+            val currentTime = System.currentTimeMillis()
+
+            // To avoid constant recomposing, only update UI after 2 sec
+            if(currentTime - lastDetectionTime < 2000) return
+
+            // Also to prevent  constant recomposing (rerendering), ignore labels that are the same as the previous
+            if (label == lastDetectedLabel) return
+
+
+            // Updating lastDetectedLabel with the newest label
+            lastDetectedLabel = label
+            lastDetectionTime = currentTime
+
+
+            // Show scanning state immediately
+            _uiState.update {
+                it.copy(detectedLabel = label, isScanning = true)
+            }
+
+
+
             viewModelScope.launch {
 
-                // Search Firestore for matching garbage item
+                // Search database for matching garbage item
                 val item = repository.searchItem(label)
 
                 // updating the ui state
-                _uiState.update { it.copy(detectedItem = item) }
+                // (but only updating if a new item is detected to prevent constant recomposing (rerendering))
+                if (_uiState.value.detectedItem != item) {
+                    _uiState.update {
+                        it.copy(
+                            detectedItem = item,
+                            isScanning = false)
+                    }
+                }
             }
         }
     }
 
 
-    // to store the item matched from the model's scanning/detection
-    data class UiState (val detectedItem: Item? = null)
+    // to store item, label og isScanning
+    data class UiState (
+
+        // Item match from Database
+        val detectedItem: Item? = null,
+
+        // Label detected by the model (ML Kit)
+        val detectedLabel: String? = null,
+
+        // Loading/scanning state
+        val isScanning: Boolean = false
+
+
+    )
 
     interface UiEvents {fun onLabelDetected(label: String)}
 
