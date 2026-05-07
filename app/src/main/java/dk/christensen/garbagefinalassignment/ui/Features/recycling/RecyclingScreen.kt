@@ -1,21 +1,11 @@
 package dk.christensen.garbagefinalassignment.ui.Features.recycling
 
-
-/*
-* Extend the RecyclingScreen.kt and RecyclingViewModel.kt to display the list of recycling
-stations fetched from the OpenData API. Make sure to at least display the name, address and
-category of each recycling station.
-*
-* */
-
-
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,7 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -48,14 +37,7 @@ import dk.christensen.garbagefinalassignment.ui.components.GarbageTopAppBar
 import dk.christensen.garbagefinalassignment.ui.navigation.AppRoute
 import kotlinx.serialization.Serializable
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Done
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material3.AssistChip
-import androidx.compose.material3.Button
 import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -241,7 +223,7 @@ private fun RecyclingScreen(
                         val isSelected = uiState.clickedBins.contains(bin.name)
 
                         // Counting the number of recycling stations with this type of bin
-                        // !!! Should it be in viewmodel?
+                        // To make it visible that only few stations do not have all bins
                         val count = uiState.recyclingStations.count { station ->
                             station.bins.any {
                                 it.contains(bin.nameDanish, ignoreCase = true)

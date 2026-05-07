@@ -16,9 +16,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import dk.christensen.garbagefinalassignment.ui.Features.garbage.AffaldKbh
-import dk.christensen.garbagefinalassignment.ui.Features.garbage.AffaldKbhScreen
-import dk.christensen.garbagefinalassignment.ui.Features.garbage.CameraScreen
 import dk.christensen.garbagefinalassignment.ui.Features.garbage.garbageNavGraph
 import dk.christensen.garbagefinalassignment.ui.Features.recycling.Bins
 import dk.christensen.garbagefinalassignment.ui.Features.recycling.RecyclingScreen
@@ -74,13 +71,7 @@ fun MainNavigation(modifier: Modifier = Modifier) {
             composable<Settings> {
                 SettingsScreen()
             }
-            composable<AffaldKbh> {
-                AffaldKbhScreen()
-            }
 
-            composable<CameraScreen> {
-                CameraScreen()
-            }
         }
 
     }

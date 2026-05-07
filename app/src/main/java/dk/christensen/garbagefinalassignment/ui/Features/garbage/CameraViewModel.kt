@@ -5,8 +5,10 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dk.christensen.garbagefinalassignment.domain.Item
 import dk.christensen.garbagefinalassignment.domain.ItemRepository
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -17,6 +19,9 @@ class CameraViewModel @Inject constructor(private val repository: ItemRepository
 
     private val _uiState = MutableStateFlow(UiState())
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
+
+    private val _navigationEvents = MutableSharedFlow<NavigationEvent>()
+    val navigationEvents = _navigationEvents.asSharedFlow()
 
     val uiEvents: UiEvents = object : UiEvents {
 
@@ -63,6 +68,12 @@ class CameraViewModel @Inject constructor(private val repository: ItemRepository
                 }
             }
         }
+
+        override fun onUpClick() {
+            viewModelScope.launch {
+                _navigationEvents.emit(NavigationEvent.NavigateUp)
+            }
+        }
     }
 
 
@@ -81,7 +92,14 @@ class CameraViewModel @Inject constructor(private val repository: ItemRepository
 
     )
 
-    interface UiEvents {fun onLabelDetected(label: String)}
+    interface UiEvents {
+        fun onLabelDetected(label: String)
+        fun onUpClick()
+    }
+
+    sealed class NavigationEvent {
+        data object NavigateUp : NavigationEvent()
+    }
 
 }
 

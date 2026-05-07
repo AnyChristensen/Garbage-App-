@@ -20,9 +20,25 @@ class GarbageAnalyzer (private val onLabelDetected: (String) -> Unit) : ImageAna
         ImageLabelerOptions.DEFAULT_OPTIONS
     )
 
+    // Used to limit how often the ML Kit runs (analyze the frames)
+    private var lastAnalyzedTime = 0L
+
     // Creating the analyzer function to analyze the live frames
     @OptIn(ExperimentalGetImage::class)
     override fun analyze(imageProxy: ImageProxy){
+
+        // Current time
+        val currentTime = System.currentTimeMillis()
+
+        // Only analyse every 1.5 second.
+        if (currentTime - lastAnalyzedTime < 1500) {
+            imageProxy.close()
+            return
+        }
+
+        // Storing last analysis time
+        lastAnalyzedTime = currentTime
+
 
         // Access the current camera frame
         val currentImage = imageProxy.image
@@ -41,13 +57,28 @@ class GarbageAnalyzer (private val onLabelDetected: (String) -> Unit) : ImageAna
 
                 // Iterating over the labels that has been detected and logging the details
                 .addOnSuccessListener {labels ->
-                    for (label in labels){
+
+                    // Show only the best label (measured by confidence)
+                    val bestLabel = labels.maxByOrNull {it.confidence}
+
+                    bestLabel?.let { label ->
+                        Log.d(
+                            "ML",
+                            "Detected: ${label.text} " +
+                                    "Confidence: ${label.confidence}"
+                        )
+
+                        // Returning the best label
+                        onLabelDetected(label.text)
+                    }
+
+                    /* for (label in labels){
                         Log.d("ML", "Detected: ${label.text} " + "Confidence: ${label.confidence}"
                         )
 
                         // Returning the detected label as a callback
                         onLabelDetected(label.text)
-                    }
+                    } */
                 }
 
                 .addOnFailureListener { e ->
@@ -56,7 +87,7 @@ class GarbageAnalyzer (private val onLabelDetected: (String) -> Unit) : ImageAna
                 }
 
                 .addOnCompleteListener {
-                    // Closing the frame buffer / scanner?
+                    // Closing the frame buffer / scanner
                     imageProxy.close()
                 }
         } else {

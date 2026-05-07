@@ -2,9 +2,7 @@ package dk.christensen.garbagefinalassignment.ui.components
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -15,6 +13,8 @@ import com.google.maps.android.compose.MarkerState
 import dk.christensen.garbagefinalassignment.domain.RecyclingStation
 
 // Creating a Map component that I can use in my Recycling Screen (and other places)
+// It is created using maps compose https://github.com/googlemaps/android-maps-compose
+// Using an API to Google maps (API is setup by using local properties (and given on LearnIt)
 
 @Composable
 fun Map(
@@ -33,7 +33,7 @@ fun Map(
     ){
 
         // The users location
-        // Change the icon to blue to separate it from the recycling stations pins
+        // Changed the icon to blue to separate it from the recycling stations pins
         Marker(
             state = MarkerState(position = location),
             title = "You are here",

@@ -34,18 +34,13 @@ class RecyclingViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(UiState())
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
-    // Holds the final Google Maps URL, or null if loading/calculating
-    // (Implemented as in nearest toilet app)
-    private val _mapUrl = MutableStateFlow<String?>(null)
-    val mapUrl: StateFlow<String?> = _mapUrl.asStateFlow()
-
     init {
 
         // Bins
         viewModelScope.launch {
             binRepository.getBins().collect { bins ->
 
-                // If empty insert all the bins (only happens once?)
+                // If empty insert all the bins
                 if (bins.isEmpty()) {
                     binRepository.insertBins()
                 } else {
@@ -184,39 +179,8 @@ class RecyclingViewModel @Inject constructor(
     }
 
 
-    // Function to filter the recycling stations by bin type (obs. removing recycling stations that not contains the bin types)
-    // (Using allRecyclingStations to keep the same list with all stations for each filtering)
-    /* private fun filterRecyclingStations (
-        clickedBins: List<String>,
-        recyclingStations: List<RecyclingStation>,
-        bins: List<Bin>): List<RecyclingStation>{
-
-        // If no filter chips is clicked or if all the clicked is removed, the original list of stations (the non-filtered) is returned
-        if(clickedBins.isEmpty()){
-            return recyclingStations
-        } else {
-
-            // Log to see the clicked bins
-            Log.d("FILTER", "Clicked bins: $clickedBins")
-
-            // .filter is here used as a lambda function (taking a function as a parameter)
-            return recyclingStations.filter { recyclingStation ->
-
-                // For each station, check if at least one (any) clicked bin matches the stations bins
-               clickedBins.any { binNameInEnglish ->
-
-                    // Finding the danish name from bin
-                    val danishName = bins.find { it.name == binNameInEnglish }?.nameDanish
-
-                   // Checking that the name in danish is not null
-                   // and checking the danish against the Recycling Stations bin name from the API
-                   danishName != null && recyclingStation.bins.any {stationBin
-                       -> stationBin.contains(danishName,ignoreCase = true)}
-
-                }
-        }
-    } */
-
+        // Function to filter the recycling stations by bin type (obs. removing recycling stations that not contains the bin types)
+        // (Using allRecyclingStations to keep the same list with all stations for each filtering)
         private fun filterRecyclingStations(
             clickedBins: List<String>,
             recyclingStations: List<RecyclingStation>,
@@ -225,16 +189,22 @@ class RecyclingViewModel @Inject constructor(
 
             if (clickedBins.isEmpty()) return recyclingStations
 
+            // Log to see the clicked bins
+            Log.d("FILTER", "Clicked bins: $clickedBins")
+
             return recyclingStations.filter { station ->
 
+                // For each station, check if at least one (any) clicked bin matches the stations bins
                 clickedBins.any { englishName ->
 
-                    val danishName = bins
-                        .find { it.name == englishName }
-                        ?.nameDanish
+                    // Finding the danish name by looking through bins (matching on english name)
+                    val danishName = bins.find { it.name == englishName } ?.nameDanish
 
+                    // Checking that the name in danish is not null
                     if (danishName == null) return@any false
 
+                    // Checking if any of the bins of the Recycling Stations (from API) contains
+                    // the clicked bin name (match in danish)
                     station.bins.any { stationBin ->
                         stationBin.contains(danishName, ignoreCase = true)
                     }
@@ -242,19 +212,6 @@ class RecyclingViewModel @Inject constructor(
             }
         }
 
-
-
-
-   /*  private fun countStationsForBin(
-        bin: Bin,
-        stations: List<RecyclingStation>
-    ): Int {
-        return stations.count { station ->
-            station.bins.any { stationBin ->
-                stationBin.contains(bin.nameDanish, ignoreCase = true)
-            }
-        }
-    } */
 
 
     // Function to sort the recycling stations by distance (obs. changing the order)

@@ -19,13 +19,15 @@ import kotlinx.serialization.Serializable
 object AffaldKbh : AppRoute
 
 @Composable
-fun AffaldKbhScreen() {
+fun AffaldKbhScreen(
+    onUpClick: () -> Unit
+) {
         Scaffold(
             topBar = {
                 GarbageTopAppBar(
-                    // Hvvilken navigation type?
                     titleRes = R.string.web_view,
-                    navigationType = NavigationType.NONE
+                    navigationType = NavigationType.BACK,
+                    onUpClick = onUpClick
                 )
             }
         ) { innerPadding ->

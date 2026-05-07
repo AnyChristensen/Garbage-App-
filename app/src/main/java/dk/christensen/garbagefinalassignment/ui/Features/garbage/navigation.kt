@@ -119,6 +119,35 @@ fun NavGraphBuilder.garbageNavGraph(navController: NavHostController) {
                 )
             }
 
+            // Affald KBH Screen
+            composable<AffaldKbh> {
+
+                AffaldKbhScreen(
+                    onUpClick = {navController.popBackStack()}
+                )
+            }
+
+            composable<AffaldKbh> {
+                AffaldKbhScreen(
+                    onUpClick = {
+                        navController.popBackStack()
+                    }
+                )
+            }
+            // Scan Garbage Screen
+            composable<CameraScreen> {
+
+                CameraScreen(
+                    onNavigate = { event ->
+
+                        when(event) {
+                            is CameraViewModel.NavigationEvent.NavigateUp ->
+                                navController.popBackStack()
+                        }
+                    }
+                )
+            }
+
         }
     }
 }

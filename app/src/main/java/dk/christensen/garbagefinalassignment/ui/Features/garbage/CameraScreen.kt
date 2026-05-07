@@ -25,7 +25,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
@@ -37,8 +36,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import kotlinx.coroutines.guava.await
-import androidx.core.content.ContextCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import java.util.concurrent.Executors
 
 
 @Serializable
@@ -46,10 +45,31 @@ object CameraScreen : AppRoute
 
 @Composable
 fun CameraScreen(
+    onNavigate: (CameraViewModel.NavigationEvent) -> Unit,
+    modifier: Modifier = Modifier,
     viewModel: CameraViewModel = hiltViewModel()
 ) {
 
     val uiState by viewModel.uiState.collectAsState()
+
+    // to collect the navigation events from the viewmodel
+    LaunchedEffect(Unit) {viewModel.navigationEvents.collect {onNavigate(it)}}
+
+    CameraScreen(
+        uiState = uiState,
+        uiEvents = viewModel.uiEvents,
+        modifier = modifier,
+        viewModel = viewModel
+    )
+}
+
+@Composable
+private fun CameraScreen(
+    uiState: CameraViewModel.UiState,
+    uiEvents: CameraViewModel.UiEvents,
+    modifier: Modifier = Modifier,
+    viewModel: CameraViewModel
+) {
 
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -81,7 +101,8 @@ fun CameraScreen(
         topBar = {
             GarbageTopAppBar(
                 titleRes = R.string.title_screen,
-                navigationType = NavigationType.NONE
+                navigationType = NavigationType.BACK,
+                onUpClick = viewModel.uiEvents::onUpClick
             )
         }
     ) { innerPadding ->
@@ -204,6 +225,18 @@ fun CameraScreen(
                                 textAlign = TextAlign.Center
                             )
                         }
+
+                        // Initial state is relevant when using emulator (since noting in the picture is garbage)
+                        else -> {
+
+                            Text(
+                                text = "Point camera at garbage item",
+                                style = MaterialTheme.typography.bodyMedium,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+
+
                     }
                 }
             }
@@ -234,7 +267,11 @@ private suspend fun startCamera(
     // "I want to analyze frames for ML"
     val analysisUseCase = ImageAnalysis.Builder().build()
 
-    val cameraExecutor = ContextCompat.getMainExecutor(context)
+    // Running the ML analysis on a background thread to prevent it from running on the main thread
+    val cameraExecutor = Executors.newSingleThreadExecutor()
+
+    // On main thread
+    // val cameraExecutor = ContextCompat.getMainExecutor(context)
 
     // Connecting the CameraX frames with the GarbageAnalyzer
     analysisUseCase.setAnalyzer(

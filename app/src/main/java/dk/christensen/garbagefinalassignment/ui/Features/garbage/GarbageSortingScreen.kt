@@ -34,11 +34,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.ui.unit.dp
 import dk.christensen.garbagefinalassignment.ui.navigation.AppRoute
 import dk.christensen.garbagefinalassignment.ui.navigation.NestedGraph
