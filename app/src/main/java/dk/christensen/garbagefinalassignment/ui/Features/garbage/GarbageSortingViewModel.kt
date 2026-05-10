@@ -46,6 +46,8 @@ class GarbageSortingViewModel @Inject constructor(private val itemRepository : I
                 }
             }
 
+            // Onclick function for when the user search for an item.
+            // Calls the function searchItem() that search in the database for an item that matches the user input
             override fun onSearchItemClick(input: String) {
                 if (input.isNotBlank()) {
 
@@ -54,17 +56,14 @@ class GarbageSortingViewModel @Inject constructor(private val itemRepository : I
                         // Searching for the item that matches userInput
                         val item = itemRepository.searchItem(input)
 
+                        // Response string using the safe call operator (?.) to check for null value
+                        // and using the elvis operator as 'else' (if the result is null use "not found")
                         val result = "$input should be placed in: ${item?.where ?: "not found"}"
 
                             _uiState.update {
                                 it.copy(foundItem = result)
                             }
                     }
-
-                        // Using collect to get the value from the flow item (emit)
-                        // Response string using the safe call operator (?.) to check for null value
-                        // and using the elvis operator as 'else' (if the result is null use "not found")
-
                 }
             }
 

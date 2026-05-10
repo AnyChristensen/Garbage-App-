@@ -44,7 +44,7 @@ data class RecyclingStationResponse(
 data class Feature(
     val type: String,
     val properties: Properties,
-    val geometry: Geometry
+        val geometry: Geometry
 )
 
 
@@ -145,19 +145,7 @@ fun Feature.toDomain(): RecyclingStation {
         longitude = coords?.getOrNull(0) ?: 0.0
     )
 
-    /*
-    from bin shopping 9
-*  val latitude: Double = 0.0,
-    val longitude: Double = 0.0,
-    val openingHour: Int = 7,
-    val closingHour: Int = 22,
-
-*
-* */
-
-
 }
-
 
 
 //-----------------------Helper functions---------------------------------------------
@@ -174,12 +162,11 @@ fun String.toGarbageItemDto(): ItemDto {
         where= splitString[1].toTitleCase())
 }
 
-// Helper function to turn trim and convert the user-typed garbage items into Titlecase
+// Helper function to trim and ignore different cases (e.g for user-typed garbage items)
 fun String.toTitleCase(): String {
     return this.trim().split(" ").joinToString(separator = " ") { word ->
         word.lowercase()
             .replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
     }
 }
-
 

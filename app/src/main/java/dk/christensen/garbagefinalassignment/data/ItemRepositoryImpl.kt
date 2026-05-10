@@ -4,23 +4,14 @@ import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.snapshots
-import dk.christensen.garbagefinalassignment.data.toTitleCase
 import dk.christensen.garbagefinalassignment.domain.Item
 import dk.christensen.garbagefinalassignment.domain.ItemRepository
 import dk.christensen.garbagefinalassignment.domain.toDto
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
-import retrofit2.HttpException
-import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.random.Random
-import kotlin.collections.map
-import kotlin.collections.set
-import kotlin.text.get
-import kotlin.text.set
 
 
 // Creating an ItemRepository class that implements an interface (ItemRepository)
@@ -86,17 +77,13 @@ class ItemRepositoryImpl @Inject constructor(
         itemsCollection.document(itemDto.id).set(itemDto, SetOptions.merge()).await()
     }
 
-    // Function to search for an item in the database
-    // The function returns an Item (the found item)
-    // Can be null therefore : Item? (to allow null value)
+    // Function to search in Firestore for an item by its "what" field.
+    // The function returns the first matching item or null if no match is found (therefore : Item? (to allow null value))
     // The room function returns a Flow with an ItemEntity (Flow<ItemEntity?>) or null
-    // This function converts the ItemEntity -> ItemDto -> Item and returns a Flow<Item?>
-    // (Do not need to be suspend as flow itself is async...)
-
-    //override fun searchItem(userInput: String): Flow<Item?> {
+    // The function also converts the itemDto into an Item object
     override suspend fun searchItem(userInput: String): Item? {
         val snapshot = itemsCollection
-            .whereEqualTo("what", userInput.trim())
+            .whereEqualTo("what", userInput.toTitleCase())
             .get()
             .await()
 
@@ -106,15 +93,6 @@ class ItemRepositoryImpl @Inject constructor(
             ?.toItem()
 
     }
-
-    // Helper function to trim and ignore different cases
-    private fun String.toTitleCase(): String {
-        return this.trim().split(" ").joinToString(separator = " ") { word ->
-            word.lowercase()
-                .replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
-        }
-    }
-
 
     // To insert the already existing garbage items from the list of garbage Strings
     override suspend fun insertExistingItems() {

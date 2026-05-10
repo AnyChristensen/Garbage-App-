@@ -145,7 +145,7 @@
                 return false
             }
 
-                // When clicking delete. Should open the confirmation dialog
+            // When clicking delete. Should open the confirmation dialog
             override fun onDeleteClick() {
                 _uiState.update { it.copy(showDeleteConfirmation = true) }
             }
