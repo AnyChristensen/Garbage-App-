@@ -79,7 +79,6 @@ class ItemRepositoryImpl @Inject constructor(
 
     // Function to search in Firestore for an item by its "what" field.
     // The function returns the first matching item or null if no match is found (therefore : Item? (to allow null value))
-    // The room function returns a Flow with an ItemEntity (Flow<ItemEntity?>) or null
     // The function also converts the itemDto into an Item object
     override suspend fun searchItem(userInput: String): Item? {
         val snapshot = itemsCollection
